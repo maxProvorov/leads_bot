@@ -1,0 +1,13 @@
+{
+  "name": "leads/telegram-bot",
+  "require": {},
+  "autoload": {
+    "psr-4": {
+      "App\\": "src/"
+    }
+  },
+  "config": {
+    "optimize-autoloader": true
+  },
+  "minimum-stability": "stable"
+}
