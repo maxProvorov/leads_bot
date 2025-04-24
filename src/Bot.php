@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace App;
 
 use App\Repository\CountryRepository;
+use App\Repository\UserRepository;
 use App\Service\CountryService;
+use App\Service\UserService;
 
 class Bot
 {
@@ -24,6 +26,9 @@ class Bot
             switch ($text) {
                 case '/getCountries':
                     $this->handleGetCountries($chatId);
+                    break;
+                case '/getUser':
+                    $this->handleGetUser($chatId);
                     break;
                 default:
                     $this->sendMessage($chatId, 'Нет такой команды');
@@ -45,8 +50,23 @@ class Bot
         $message = "Последние 10 стран из запроса:\n";
 
         foreach ($countries as $country) {
-            $message .= "{$country->name}\n";
+            $message .= "{$country->id} " . "{$country->name}\n";
         }
+
+        $this->sendMessage($chatId, $message);
+    }
+
+    private function handleGetUser($chatId)
+    {
+        $userService = new UserService(
+            new UserRepository(
+                $this->config['leads_su']['api_token'],
+                $this->config['leads_su']['user_url']
+            )
+        );
+
+        $user = $userService->getUserInfo();
+        $message = "Инфо о текущем пользователе:\n" . "{$user->id} " . "{$user->name}";;
 
         $this->sendMessage($chatId, $message);
     }
